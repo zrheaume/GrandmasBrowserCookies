@@ -1,0 +1,28 @@
+.app-container{
+   background: #B3B3B3;
+}
+
+.header{
+   background: #FFCE7F;
+}
+
+.score-panel{
+   background: #F47B00;
+}
+
+.gameboard{
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+}
+
+
+.tile{
+   margin: 15px;
+}
+
+.tile-body {
+   background-image: url(/browserArt.png);
+   background-size: cover;
+   background-repeat: no-repeat;
+}
