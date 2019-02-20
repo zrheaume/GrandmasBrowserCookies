@@ -63,12 +63,50 @@ function Tile(props) {
       let state = props.parent_Getter
       if (state.tiles[props.index].cleared) {
          alert("Well, looks like IE froze... Guess you lost!!!")
-         props.parent_Setter ({ tiles: state.tiles, score: 0, shuffled: false})
+         props.parent_Setter(
+            {
+               tiles: [
+                  {
+                     name: "Cheapo Deals",
+                     cleared: false
+                  },
+                  {
+                     name: "Jigsaw Puzzles Direct",
+                     cleared: false
+                  },
+                  {
+                     name: "Roarin' Twenties Reunion",
+                     cleared: false
+                  },
+                  {
+                     name: "Buy Knitting Supplies NOW",
+                     cleared: false
+                  },
+                  {
+                     name: "Enter Best Sweepstakes Free",
+                     cleared: false
+                  },
+                  {
+                     name: "Magazines Direct 2 Door",
+                     cleared: false
+                  },
+                  {
+                     name: "Clean Your PC 1000xFaster",
+                     cleared: false
+                  },
+                  {
+                     name: "Download Printable TV Guide",
+                     cleared: false
+                  }
+               ],
+               score: 0,
+               shuffled: false
+            })
       } else if (!state.tiles[props.index].cleared) {
          // console.log(tiles[props.index])
          state.tiles[props.index].cleared = true
          // console.log(tiles[props.index])
-         props.parent_Setter({ tiles: state.tiles, score: state.score+1, shuffled: false })
+         props.parent_Setter({ tiles: state.tiles, score: state.score + 1, shuffled: false })
       }
    }
 
@@ -145,7 +183,7 @@ function GameBoard(props) {
 
    return (
       <div>
-         <Scorebar score={gameState.score} /> 
+         <Scorebar score={gameState.score} />
          <div className="card gameboard-container" >
             <div className="gameboard">
                {
