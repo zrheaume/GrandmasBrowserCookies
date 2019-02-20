@@ -6,10 +6,8 @@ import "./game.css"
 
 // ? Default layout formatting
 const layout = {
-   defaultValues: {
-      margin: 5,
-      gutter: 5
-   }
+   margin: 5,
+   gutter: 5
 }
 
 // ? Function that randomizes the order of an array's elements
@@ -46,75 +44,53 @@ function Header(props) {
 
 function Scorebar(props) {
 
-   const [score, setScore] = useState(0)
-   const incrementScore = () => setScore(score + 1)
-
    return (
       <div className="card score-panel">
          <div className="card-body score-panel-display">
-            <b><u> Your current score: </u></b> <span> {score} </span>
+            <b><u> Your current score: </u></b> <span> {props.score} </span>
          </div>
       </div>
    )
 }
 
 function Tile(props) {
+   let defaultSize = {
+      w: `${(window.innerWidth) * 0.15}px`
+   }
+
+   let handleTileClick = (event) => {
+      // console.log(props.index)
+      let state = props.parent_Getter
+      if (state.tiles[props.index].cleared) {
+         alert("Well, looks like IE froze... Guess you lost!!!")
+         props.parent_Setter ({ tiles: state.tiles, score: 0, shuffled: false})
+      } else if (!state.tiles[props.index].cleared) {
+         // console.log(tiles[props.index])
+         state.tiles[props.index].cleared = true
+         // console.log(tiles[props.index])
+         props.parent_Setter({ tiles: state.tiles, score: state.score+1, shuffled: false })
+      }
+   }
 
    return (
-      
-         <div className="card tile" style={props.style}>
-            <div className="card-body">
-               <b className="card-text">{props.name}</b>
-            </div>
-            <img className="card-img-top" src="/browserArt.png" alt="Whoops!" />
+
+      <div className="card tile"
+         onClick={handleTileClick}
+         style={{ width: defaultSize.w }}
+      >
+
+         <div className="card-body">
+            <b className="card-text">{props.name}</b>
          </div>
-      
+         <img className="card-img-top" src="/browserArt.png" alt="Whoops!" />
+      </div>
+
 
 
    )
 }
 
 function GameBoard(props) {
-
-   const[tiles, refreshTiles] = useState(shuffle(props.tiles))
-
-   let defaultTileSize = {
-      width: `${window.innerWidth * 0.15}px`
-   }
-
-
-   return (
-      <div className="card gameboard-container" >
-         <div className="gameboard">
-            {
-               props.tiles.map((element, p) => {
-                  return <Tile
-                     key={p}
-                     name={element.name}
-                     style={defaultTileSize}
-                     onClick={(event) => {
-                        console.log(event)
-                     }}
-                  />
-               })
-            }
-         </div>
-      </div >
-
-   )
-
-}
-
-function Container(props) {
-
-   return (
-      <div className="container app-container" >
-         {props.children}
-      </div>
-   )
-}
-
-function Game(props) {
 
    const [gameState, setGameState] = useState(
       {
@@ -152,25 +128,59 @@ function Game(props) {
                cleared: false
             }
          ],
-         score: 0
+         score: 0,
+         shuffled: false
       })
 
-   // useEffect(() => {
-   //    window.addEventListener("resize", () => {
-   //    })
-   // })
+
+   useEffect(() => {
+      if (!gameState.shuffled) {
+         let shuffled = shuffle(gameState.tiles)
+         setGameState({ tiles: shuffled, score: gameState.score, shuffled: true })
+      }
+      if (gameState.score === 8) {
+         alert("You won! Your grandma thanks you.")
+      }
+   })
+
+   return (
+      <div>
+         <Scorebar score={gameState.score} /> 
+         <div className="card gameboard-container" >
+            <div className="gameboard">
+               {
+                  gameState.tiles.map((element, p) => {
+                     return <Tile
+                        key={p}
+                        index={p}
+                        name={element.name}
+                        cleared={element.cleared}
+                        parent_Setter={setGameState}
+                        parent_Getter={gameState}
+                     />
+                  })
+               }
+            </div>
+         </div>
+      </div>
+   )
+}
+
+function Container(props) {
+
+   return (
+      <div className="container app-container" >
+         {props.children}
+      </div>
+   )
+}
+
+function Game(props) {
 
    return (
       <Container >
          <Header />
-         <Scorebar
-            score={0}
-            incrementScore={(x) => x + 1}
-         />
-         <GameBoard
-            tiles={gameState.tiles}
-            grab={setGameState}
-         />
+         <GameBoard />
       </Container>
    )
 }
